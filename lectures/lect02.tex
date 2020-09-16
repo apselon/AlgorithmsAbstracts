@@ -1,0 +1,120 @@
+\section{Потоки}%
+\label{sec:Потоки}
+
+\begin{Def}
+	\textbf{Сеть} -- орентированный граф $G = (V, E)$, с двумя выделенными различными вершинами: $s$ -- исток и  $t$ -- сток, а также с функцией $cap: E \rightarrow \Z_{>0}$.
+\end{Def}
+
+\begin{Def}
+	\textbf{Поток} в сети -- функция $f: V \times V \rightarrow \Z$:
+	
+	\begin{enumerate}
+		\item $\forall u, v \in V \hookrightarrow f(u, v) \leq cap(u, v)$
+		\item $\forall v \in V \setminus \{s, t\} \hookrightarrow \sum\limits_{u:\ (u, v) \in E} f(u, v) = \sum\limits_{w:\ (v, w) \in E} f(v, w)$
+		\item $\forall u, v \in V \hookrightarrow f(u, v) = -f(v, u)$
+	\end{enumerate}
+
+	\begin{note}
+		Свойства 2 и 3 можно объединить в следующем виде $\forall v \in V \hookrightarrow \sum\limits_{u \in V} f(v, u) = 0$
+	\end{note}
+\end{Def}
+
+
+\begin{Def}
+	\textbf{Остаточная сеть} $G_f$ сети  $G$ с потоком $f$ -- сеть, у которой модифицируются пропускные способности:  $cap_f(u, v) = cap(u, v) - f(u, v)$, и удаляются ребра с нулевой  $cap_f$.
+\end{Def}
+
+\begin{Def}
+	\textbf{Величина потока} $\lvert f \rvert$-- то сколько "вытекает" из $s$ -- сумму исходящих из  $s$ потоков.
+\end{Def}
+
+\begin{Def}
+	\textbf{Разрез} сети $G$ -- пара подсетей $(S, T)$:  $s \in S, t \in T, S \cap T = \emptyspace$ 
+	$cap(S, T) = \sum\limits_{u \in S, v \in T} cap(u, v)$ 
+	$f(S, T) = \sum\limits_{u \in S, v \in T} f(u, v)$
+\end{Def}
+
+\begin{lemma}
+	$(S, T)$ -- разрез $\Rightarrow$ $\lvert f \rvert = f(S, T)$
+\end{lemma}
+
+\begin{proof}
+	На семинаре.	
+\end{proof}
+
+\begin{lemma}
+	$(S, T)$ -- разрез $\Rightarrow$ $f(S, T) \leq cap(S, T)$
+\end{lemma}
+
+\begin{proof}
+	$\forall u, v \in V \hookrightarrow f(u, v) \leq cap(u, v) \Rightarrow$ чтд.
+\end{proof}
+
+\begin{theorem} (Форда -- Фалкерсона)
+	Следующие утверждения эквивалентны:
+	\begin{enumerate}
+		\item $f$ -- max поток в $G$  
+		\item в $G_f$ нет пути из  $s$ в  $t$
+		\item $\lvert f \rvert$  = $cap$ некоторого разреза.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof} \ \\
+	$1 \Rightarrow 2$: От противного: \\
+		Пусть  $f$ -- max, но в  $G_f$ есть путь  $s \rightarrow t$.
+		Рассмотрим  $x = min(cap_f) > 0$ на этом пути.
+		Значит вдоль пути можно пустить  $x$ едениц потока  $\Rightarrow$ в исходной сети можно было пустить на x единиц больше $Rightarrow$ f -- не  max.
+
+	$2 \Rightarrow 3$: \\
+		Пусть $S$ = множество вершин, доступных из  $s$ в  $G_f$,  $t \notin S$
+		$T = V \setminus S$.
+		По определению $(S, T)$ -- разрез.
+		Покажем что $\lvert f \rvert = cap(S, T) = \sum\limits_{u \in S, v \in T} cap(u, v)$.
+		Рассмотрим ребро $(u, v)$: $u \in S, v \in T$
+		$u$ -- доступно в  $G_f$,  $v$ -- нет  $Rightarrow$ оно удаляется в остаточной сети $Rightarrow f(u, v) = cap(u, v) Rightarrow \sum\limits_{u \in S, v \in V} cap(u, v) = \sum\limits_{u \in S, v \in V} f(u, v) \Rightarrow f(S, T) = \lvert f \rvert = cap(S, T)$.
+
+	$3 \Rightarrow 1$: \\
+	$\exists (S, T):\ \lvert f \rvert = cap(S, T)$.
+	При этом $\forall (S, T) -- разрез \hookrightarrow f(S, T) \leq cap(S, T) \Rightarrow f$  -- max.
+\end{proof}
+
+\textbf{Алгоритм Форда -- Фалкерсона для поиска максимального потока.}
+\begin{enumerate}
+	\item Изначально поток равен 0.
+	\item Пока в $G_f$ есть путь из  $s$ в  $t$:\\
+		\begin{enumerate}
+			\item $x = min(cap_f$ на этом пути  $) > 0$ 
+			\item Увеличим поток $f$ на $x$ и изменим остаточную сеть соответсвующим образом.
+		\end{enumerate}
+\end{enumerate}
+$\lvert f \rvert$ увеливается на целое положительное число и ограничен сверху, значит алгоритм закончится.
+Асимтотика -- $O(ans * \lvert E  \rvert)$ 
+
+\textbf{Алгоритм Эдмондса -- Карпа для поиска максимального потока.}
+Та же самая идея, только теперь вместо произвольного пути будем выбирать кратчайший путь по ребрам. По сути, DFS меняется на BFS.
+\begin{enumerate}
+	\item Изначально поток равен 0.
+	\item Пока в $G_f$ есть \textit{минимальный} путь из $s $ в $t$:
+		\begin{enumerate}
+			\item $x = min(cap_f$ на этом пути $) > 0$.
+			\item  увеличим поток $f$ на  $x$  и изменим остаточную сеть соответсвующим образом.
+		\end{enumerate}
+\end{enumerate}
+
+Алгоритм будет иметь асимптотику $O(\lvert V \rvert \times \lvert E \rvert ^ 2)$
+Докажем асимптотику.
+
+\begin{Def}
+	$dist(u, v)$ -- минимальное число ребер между вершинами.
+\end{Def}
+
+\begin{lemma}
+	Пусть поток $f'$ получается из потока $f$ после одной итерации алгоритма Эдмондса -- Карпа.
+	Пусть $dist'(u, v)$ -- кратчайшее расстояние между ребрами в $G_{f'}$, тогда
+	$\forall v \in V \{s, t\} \hookrightarrow dist'(s, v) \geq dist(s, v)$. 
+	То есть с каждой итерацией расстояние не убывает.
+\end{lemma}
+
+\begin{proof}
+	
+\end{proof}

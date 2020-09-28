@@ -1,0 +1,106 @@
+\section{Продложение потоков. Алгоритм Диница, теоремы Карзанова}%
+\label{sec:Продложение потоков. Алгоритм Диница, теоремы Карзанова}
+
+\textbf{Детали реализации.}
+
+\begin{lstlisting}[mathescape, language = C++, caption = Удобная реализация ребер, escapeinside={\%*}{*}] 
+	struct Edge {
+		int from = 0,
+		    to   = 0;
+
+		long long cap = 0;
+		long long flow = 0;
+	};
+
+	auto edges = vector<Edge>();
+	auto outbound = vector<vector<Edge>>(); /* v-th element -- numbers of edges from v. */
+\end{lstlisting}
+
+Рядом с каждым ребром всегда есть обратное, с изначально нулевой capacity. Будем присваивать обратному ребру номер исходного, увеличеный на 1. К примеру номера $2n$ и $2n + 1$.
+Тогда при добавлении нового ребра в граф, мы будем добавлять его и сразу же добавлять обратное, а потом сохранять номера обоих ребер в массив edges.
+
+Теперь если мы пускаем поток по ребру с номером $i$, то можем удобно уменьшить поток по противоположному ребру, как имеющее номер $i \oplus 1$
+
+\begin{lstlisting}
+	edges[i].flow     += delta_flow;
+	edges[i ^ 1].flow -= delta_flow;
+\end{lstlisting}
+При реализации алгоритма Форда-Фалкерсона будем просто выполнять DFS на ребрах, у которых cap > flow.
+
+\textbf{Блокирующий поток.}
+\begin{def}
+	\textbf{Блокирующий} --  поток $f$ в сети  $G$, такой что в сети  $G$ (но вовсе не обязательно $G_f$) больше нет пути из $s$ в  $t$, вдоль которого можно протолкнуть поток. 
+\end{def}
+
+\begin{example}
+	Даю установку: Вы видите рисунок графа.
+\end{example}
+
+\begin{note}
+	Блокирующий поток совершенно не нобязательно наибольший.	
+\end{note}
+
+\textbf{Поиск блокирующего потока за $O(n \dot m)$}
+\textit{Забудем что у нас бывают обратные ребра.}
+Идея проста, будем пускать поток пока получается, а для оптимизации учтем тот факт, что если мы уже однажды пытались пойти вдоль ребра, и узнали что после прохода по нему дойти до $t$ не получится, то нам не стоит идти по этому ребру снова. Это аналог метки used в DFS.
+
+\begin{lstlisting}
+	auto first_worthy_edge_num = vector<int>(); //first_worthy_edge[v] -- relative number of the first edge which is worth considiring from v.
+
+	long long dfs(int v, long long flow){
+	//If we've followed the path and we can push the flow, we do it.
+		if (v == t) return flow;
+
+	//While there is at least one worthy edge.
+		while (first_worthy_edge_num[v] < outbound[v].size()){
+			auto cur_e = g[v][first_worthy_edge_num[v]];
+		
+		//If there is some additional flow we can push and the edge is presented in initial network (is not reverse).
+		//We will code edge presence checker in Dinic's algorithm.
+		if (edges[e].capacity > edges[e].flow && e is not reverse edge){
+				auto next_flow = dfs(edges[e].to, min(flow, edges[e].cap - edges[e].flow));
+
+				if (next_flow > 0){
+					edges[e].flow     += next_flow;
+				//Despite forgeting about reverse edges we will need that in Dinic's algorithm. 
+					edges[e ^ 1].flow -= next_flow;
+
+					return next_flow;
+				}
+			}
+		
+			++first_worthy_edge_num[v];
+		}
+
+		return 0;
+	}
+\end{lstlisting}
+
+Тогда сам поиск блокирующего потока будет иметь вид
+\begin{lstlisting}
+	while ((auto x = dfs(s, inf)) != 0){
+		blocking_flow += x;
+	}
+\end{lstlisting}
+
+%Алгоритм работает за $O(nm)$, ведь если главный вызов dfs (из main) суммарно сдвинул все номера интересных вершин увеличелись на $k$, то dfs работал  $n + k$, ведь каждое ребро либо нас устроило, и мы просто увеличели номер, либо оно нас устроило, и мы пошли в новую вершину, а сдвигать указтели долго мы не сможем, суммарно сдвигов будет не больше чем  $m$, а значит время работы =  $n \dot$ #кол-во запусков $+ m$, а каждый запуск насыщает хоть 1 ребро, при этом из-за отсутствия обратного ребра, ребра не рассыщаются. Значит имеем асимптотику  $O(nm)$
+
+\textbf{Алгоритм Диница для поиска наибольшего потока за $O(n^2 m)$}
+Пусть $G$ -- сеть. \\
+$dist(s, v)$ -- кратчайшее расстояние между вершинами. \\
+
+Определим слоистую сеть: \\
+\begin{enumerate}
+	\setcounter{enumi}{0}
+	\item Вершина s.
+	\item Вершины на расстоянии 1 от s
+	...
+	\setcounter{enumi}{10} %Починю когда будет рисунок
+	\item Вершины на расстоянии k от s
+\end{enumerate}
+При этом оставим только ребра, идущие из меньшего уровня в следующий по порядку.
+
+Даю установку: Вы видите рисунок слоистой сети.
+
+
+

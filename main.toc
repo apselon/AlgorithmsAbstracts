@@ -1,3 +1,0 @@
-\babel@toc {russian}{}
-\contentsline {section}{\numberline {1}Паросочетания. Минимальное вершинное покрытие.}{2}{section.1}%
-\contentsline {section}{\numberline {2}Потоки}{6}{section.2}%

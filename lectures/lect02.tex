@@ -60,22 +60,22 @@
 \end{theorem}
 
 \begin{proof} \ \\
-	$1 \Rightarrow 2$: От противного: \\
+	\underline{$1 \Rightarrow 2$}: От противного: \\
 		Пусть  $f$ -- max, но в  $G_f$ есть путь  $s \rightarrow t$. \\
 		Рассмотрим  $x = min(cap_f) > 0$ на этом пути. \\
-		Значит вдоль пути можно пустить  $x$ единиц потока  $\Rightarrow$ в исходной сети можно было пустить на x единиц больше $Rightarrow$ f -- не  max. 
+		Значит вдоль пути можно пустить  $x$ единиц потока  $\Rightarrow$ в исходной сети можно было пустить на x единиц больше $\Rightarrow$ f -- не  max. 
 
-	$2 \Rightarrow 3$: \\
+		\underline{$2 \Rightarrow 3$}: \\
 		Пусть $S$ = множество вершин, доступных из  $s$ в  $G_f$,  $t \notin S$ \\
 		$T = V \setminus S$. \\
 		По определению $(S, T)$ -- разрез. \\
 		Покажем что $\lvert f \rvert = cap(S, T) = \sum\limits_{\substack{u \in S \\ v \in T}} cap(u, v)$. \\
 		Рассмотрим ребро $(u, v)$: $u \in S, v \in T$ \\
-		$u$ -- доступно в  $G_f$,  $v$ -- нет  $Rightarrow$ оно удаляется в остаточной сети $Rightarrow \\
-		f(u, v) = cap(u, v) Rightarrow \sum\limits_{\substack{u \in S \\ v \in V}} cap(u, v) = \sum\limits_{\substack{u \in S \\ v \in V}} f(u, v) \Rightarrow$ \\
+		$u$ -- доступно в  $G_f$,  $v$ -- нет  $\Rightarrow$ оно удаляется в остаточной сети $\Rightarrow \\
+		f(u, v) = cap(u, v) \Rightarrow \sum\limits_{\substack{u \in S \\ v \in V}} cap(u, v) = \sum\limits_{\substack{u \in S \\ v \in V}} f(u, v) \Rightarrow$ \\
 		$f(S, T) = \lvert f \rvert = cap(S, T)$. 
 
-	$3 \Rightarrow 1$: \\
+		\underline{$3 \Rightarrow 1$}: \\
 	$\exists (S, T):\ \lvert f \rvert = cap(S, T)$. \\
 	При этом $\forall (S, T)$ -- разрез $\hookrightarrow f(S, T) \leq cap(S, T) \Rightarrow f$  -- max. 
 \end{proof}

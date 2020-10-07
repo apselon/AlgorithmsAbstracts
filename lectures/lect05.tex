@@ -60,7 +60,7 @@
 	Рассмотрим суффикс, оканчивающийся на позиции $i + 1$ и имеющий длину $\pi(i + 1)$. Удалив из него последний элемент, мы получим суффикс, оканичающийся на позиции $i$ и имеющий длину  $\pi(i + 1) - 1$\\
 	Однако, мы определили $\pi(i)$ максимальную длину суфикса  $\Rightarrow$ $\pi(i) \geq \pi(i + 1) - 1$.
 	\begin{center}
-		\framebox{\includegraphics[scale = 0.1]{~/Study/3rdSem/Algorithms/Abstracts/images/lect05/dec_pi_i_plus_1.jpeg}}
+		\framebox{\includegraphics[scale = 0.1]{~/Study/3rdSem/Algorithms/Abstracts/images/lect05/dec_pi_leq.jpeg}}
 	\end{center}
 \end{proof}
 
@@ -70,7 +70,7 @@
 \begin{proof}
 	Условие говорит нам, что после префикса длины $\pi(i)$ находится символ, который совпадает с символом, который находится после суффикса, оканичвающегося на позиции $i$. То есть наибольший суффикс, заканчивающийся на позиции $i + 1$ содержит в себе все символы суффикса, заканчивающегося на позиции $i$ и еще один символ. Это и записано в правой части.
 	\begin{center}
-		\framebox{\includegraphics[scale = 0.1]{~/Study/3rdSem/Algorithms/Abstracts/images/lect05/dec_pi_leq.jpeg}}
+		\framebox{\includegraphics[scale = 0.1]{~/Study/3rdSem/Algorithms/Abstracts/images/lect05/dec_pi_i_plus_1.jpeg}}
 	\end{center}
 \end{proof}
 

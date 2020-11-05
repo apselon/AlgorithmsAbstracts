@@ -75,7 +75,7 @@ $jump(node, c) = $
 \begin{itemize}
     \item[$\textperiodcentered$] $son\_c$, \text{если ребро бора $c$ переводит вершину $node$ в  $son\_c$}
     \item[$\textperiodcentered$] $null$, \text{если $node$ --- корень, у которого нет ребра бора $c$}
-    \item[$\textperiodcentered$] $go(suflink(node), c)$, \text{иначе}
+    \item[$\textperiodcentered$] $jump(suflink(node), c)$, \text{иначе}
 \end{itemize}
 
 С учетом концепции универсальности перехода, переход по суффиксной ссылке вершины --- переход из суффиксной ссылки родителя по ребру $c$, где  $c$ --- ребро, которое перевело родителя в вершину.
@@ -133,7 +133,7 @@ $jump(node, c) = $
     \item Построим сжатые терминальные ссылки в автомате.
     \item Для каждого считанного символа $c$:
         \begin{enumerate}
-            \item $cur\_node = go(root, c)$
+            \item $cur\_node = jump(root, c)$
             \item Если $cur\_node == null$, вхождение соответствует, идем дальше.
             \item В противном случае, засвидетельствуем вхождение подстроки, соответствующей текущей вершине, если она терминальная, а также всех ее сжатых терминальных ссылок.
         \end{enumerate}
